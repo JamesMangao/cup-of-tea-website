@@ -1,6 +1,6 @@
 {
   "deploy": {
-    "releaseCommand": "php artisan migrate --force",
+    "releaseCommand": "php artisan config:clear && php artisan cache:clear && php artisan migrate --force",
     "numReplicas": 1,
     "restartPolicyType": "ON_FAILURE"
   }
