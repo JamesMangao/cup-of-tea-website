@@ -349,9 +349,18 @@
         }
         footer a { color: var(--lime); text-decoration: none; }
         footer a:hover { text-decoration: underline; }
+
+        .page-entrance {
+            animation: slideUpFade 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+
+        @keyframes slideUpFade {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
-<body>
+<body class="page-entrance">
 
     <!-- NAV -->
     <nav>

@@ -182,9 +182,55 @@
         @media (max-width: 440px) {
             .field-row { grid-template-columns: 1fr; }
         }
+
+        /* LOADER */
+        #page-loader {
+            position: fixed;
+            inset: 0;
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(8px);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.4s ease, visibility 0.4s;
+            visibility: hidden;
+            opacity: 0;
+        }
+        #page-loader.visible { visibility: visible; opacity: 1; }
+        .loader-content { display: flex; flex-direction: column; align-items: center; gap: 20px; }
+        .premium-spinner { width: 60px; height: 60px; position: relative; }
+        .premium-spinner div {
+            box-sizing: border-box; display: block; position: absolute; width: 48px; height: 48px; margin: 6px;
+            border: 3px solid var(--lime); border-radius: 50%;
+            animation: premium-spinner 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+            border-color: var(--lime) transparent transparent transparent;
+        }
+        .premium-spinner div:nth-child(1) { animation-delay: -0.45s; }
+        .premium-spinner div:nth-child(2) { animation-delay: -0.3s; }
+        .premium-spinner div:nth-child(3) { animation-delay: -0.15s; }
+        @keyframes premium-spinner { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .loader-text { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--lime); animation: pulse-text 2s infinite; }
+        @keyframes pulse-text { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        [x-cloak] { display: none !important; }
+        .page-entrance {
+            animation: slideUpFade 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+        @keyframes slideUpFade {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
-<body>
+<body x-data="{ loading: false }" class="page-entrance">
+    <!-- Page Loader -->
+    <div id="page-loader" :class="{ 'visible': loading }" x-cloak>
+        <div class="loader-content">
+            <div class="premium-spinner"><div></div><div></div><div></div><div></div></div>
+            <div class="loader-text">Analyzing Credentials</div>
+        </div>
+    </div>
     <div class="card">
 
         <!-- Logo -->
@@ -205,7 +251,7 @@
 
         <h1 class="card-title">Create Account</h1>
 
-        <form method="POST" action="{{ route('register') }}">
+        <form method="POST" action="{{ route('register') }}" @submit="loading = true">
             @csrf
 
             <!-- Name -->

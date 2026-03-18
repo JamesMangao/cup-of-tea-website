@@ -299,7 +299,9 @@ document.addEventListener('alpine:init', () => {
                 });
                 if (this.searchQuery) params.append('q', this.searchQuery);
 
-                const res  = await fetch(`/api/news?${params}`);
+                const res  = await fetch(`/api/news?${params}`, {
+                    headers: { 'Accept': 'application/json' }
+                });
                 if (!res.ok) throw new Error('Failed to connect to server.');
                 const data = await res.json();
                 if (data.error) throw new Error(data.error);

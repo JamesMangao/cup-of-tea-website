@@ -233,7 +233,9 @@
             this.loading = true;
             this.error = null;
             try {
-                const res = await fetch(`/api/news?category=${this.activeCategory}`);
+                const res = await fetch(`/api/news?category=${this.activeCategory}`, {
+                    headers: { 'Accept': 'application/json' }
+                });
                 if (!res.ok) throw new Error('Neural network timeout.');
                 const data = await res.json();
                 if (data.error) throw new Error(data.error);
@@ -248,7 +250,9 @@
 
         async fetchStats() {
             try {
-                const res = await fetch('/api/dashboard/stats');
+                const res = await fetch('/api/dashboard/stats', {
+                    headers: { 'Accept': 'application/json' }
+                });
                 if (res.ok) {
                     const data = await res.json();
                     this.stats.total_summaries = data.total_summaries;

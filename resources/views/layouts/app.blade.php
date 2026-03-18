@@ -448,6 +448,161 @@
             to { transform: rotate(360deg); } 
         }
 
+        /* LOADER */
+        #page-loader {
+            position: fixed;
+            inset: 0;
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(8px);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.4s ease, visibility 0.4s;
+            visibility: hidden;
+            opacity: 0;
+        }
+
+        #page-loader.visible {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .loader-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .premium-spinner {
+            width: 60px;
+            height: 60px;
+            position: relative;
+        }
+
+        .premium-spinner div {
+            box-sizing: border-box;
+            display: block;
+            position: absolute;
+            width: 48px;
+            height: 48px;
+            margin: 6px;
+            border: 3px solid var(--lime);
+            border-radius: 50%;
+            animation: premium-spinner 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+            border-color: var(--lime) transparent transparent transparent;
+        }
+        .premium-spinner div:nth-child(1) { animation-delay: -0.45s; }
+        .premium-spinner div:nth-child(2) { animation-delay: -0.3s; }
+        .premium-spinner div:nth-child(3) { animation-delay: -0.15s; }
+
+        @keyframes premium-spinner {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loader-text {
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--lime);
+            animation: pulse-text 2s infinite;
+        }
+
+        @keyframes pulse-text {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .modal-content-styled {
+            padding: 32px;
+            text-align: center;
+            position: relative;
+            z-index: 10;
+        }
+
+        .modal-icon-wrap {
+            width: 64px;
+            height: 64px;
+            background: var(--red-dim);
+            color: var(--red);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 32px;
+        }
+
+        @media (max-width: 640px) {
+            .modal-actions {
+                flex-direction: column;
+            }
+        }
+
+        .modal-btn {
+            padding: 10px 24px;
+            border-radius: 10px;
+            font-size: 0.875rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+            min-width: 140px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            font-family: inherit;
+        }
+
+        .modal-btn-outline {
+            background: transparent;
+            border-color: var(--border2);
+            color: var(--muted);
+        }
+        .modal-btn-outline:hover {
+            border-color: var(--lime);
+            color: var(--lime);
+            background: var(--lime-dim);
+        }
+
+        .modal-btn-danger {
+            background: var(--red);
+            color: white;
+            box-shadow: 0 4px 12px rgba(224, 85, 85, 0.25);
+        }
+        .modal-btn-danger:hover {
+            background: #f87171;
+            transform: translateY(-1px);
+        }
+
+        /* PAGE ENTRANCE ANIMATIONS */
+        .page-entrance {
+            animation: slideUpFade 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+
+        @keyframes slideUpFade {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         [x-cloak] { 
             display: none !important; 
         }
@@ -501,7 +656,15 @@
 </style>
 
 </head>
-<body>
+<body x-data="{ loading: false }" @page-loading.window="loading = true">
+
+<!-- Page Loader -->
+<div id="page-loader" :class="{ 'visible': loading }" x-cloak>
+    <div class="loader-content">
+        <div class="premium-spinner"><div></div><div></div><div></div><div></div></div>
+        <div class="loader-text">Initializing Systems</div>
+    </div>
+</div>
 <div class="app-shell">
 
     <!-- SIDEBAR -->
@@ -549,25 +712,42 @@
             @endif
         </div>
 
+        @if(auth()->user()?->is_admin)
         <!-- Settings -->
         <div class="sidebar-bottom">
             <div class="nav-label">Settings</div>
-            <a href="#" class="nav-item">
+            <a href="{{ route('settings.ai') }}" class="nav-item {{ request()->routeIs('settings.ai') ? 'active' : '' }}">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
                 AI Settings
             </a>
-            <a href="#" class="nav-item">
+            <a href="{{ route('settings.system') }}" class="nav-item {{ request()->routeIs('settings.system') ? 'active' : '' }}">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
                 System Settings
             </a>
-            <form method="POST" action="{{ route('logout') }}">
+
+            <div class="nav-item logout" @click="$dispatch('open-modal', 'confirm-logout')" style="width:100%;text-align:left;cursor:pointer;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                Logout
+            </div>
+
+            <!-- Standalone Hidden Logout Form to prevent CSRF issues in nested components -->
+            <form id="global-logout-form" method="POST" action="{{ route('logout') }}" style="display: none;">
                 @csrf
-                <button type="submit" class="nav-item logout" onclick="return confirm('Logout from all sessions? All data remains safe.')" style="width:100%;text-align:left;">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-                    Logout
-                </button>
             </form>
         </div>
+        @else
+        <div class="sidebar-bottom">
+            <div class="nav-item logout" @click="$dispatch('open-modal', 'confirm-logout')" style="width:100%;text-align:left;cursor:pointer;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                Logout
+            </div>
+
+            <!-- Standalone Hidden Logout Form to prevent CSRF issues in nested components -->
+            <form id="global-logout-form" method="POST" action="{{ route('logout') }}" style="display: none;">
+                @csrf
+            </form>
+        </div>
+        @endif
     </aside>
 
     <!-- MAIN -->
@@ -593,12 +773,31 @@
         </div>
 
         <!-- PAGE BODY -->
-        <div class="page-body" x-data="sessionToasts">
+        <div class="page-body page-entrance" x-data="sessionToasts">
             @yield('content')
         </div>
     </div>
 
 </div>
+
+<x-modal name="confirm-logout" maxWidth="md" focusable>
+    <div class="modal-content-styled">
+        <div class="modal-icon-wrap" style="background: rgba(224, 85, 85, 0.15); border: 1px solid rgba(224, 85, 85, 0.25);">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        </div>
+        <h2 class="text-2xl font-black text-white mb-3 tracking-tight">Confirm Logout</h2>
+        <p class="text-gray-400 mb-10 leading-relaxed px-4">Are you sure you want to end your session? Your progress is securely saved in our neural network.</p>
+        
+        <div class="modal-actions">
+            <button x-on:click="$dispatch('close')" class="modal-btn modal-btn-outline">
+                Stay Authenticated
+            </button>
+            <button type="button" @click="$dispatch('page-loading'); document.getElementById('global-logout-form').submit();" class="modal-btn modal-btn-danger">
+                Disconnect Now
+            </button>
+        </div>
+    </div>
+</x-modal>
 
 <script>
 document.addEventListener('alpine:init', () => {
@@ -615,6 +814,26 @@ document.addEventListener('alpine:init', () => {
         if (info) window.toast.open('info', info);
       }
     }));
+});
+
+// Navigation Loader Logic
+window.addEventListener('beforeunload', () => {
+    window.dispatchEvent(new CustomEvent('page-loading'));
+});
+
+// Intercept specific link clicks for immediate visual feedback if they take time
+document.addEventListener('click', (e) => {
+    const link = e.target.closest('a');
+    if (link && 
+        link.href && 
+        link.href.startsWith(window.location.origin) && 
+        !link.href.includes('#') && 
+        !link.href.includes('/logout') && // Exclude logout from interceptor
+        !link.hasAttribute('download') &&
+        link.target !== '_blank') {
+        // We show loader on beforeunload, but doing it here makes it feel instant
+        window.dispatchEvent(new CustomEvent('page-loading'));
+    }
 });
 </script>
 
