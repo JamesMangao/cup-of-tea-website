@@ -58,14 +58,19 @@ class DashboardController extends Controller
 
         // If not enough trending, use fallbacks
         if ($trending->count() < 3) {
-            $trending = collect(['AI Revolution', 'Global Economy', 'Open Source', 'Cybersecurity', 'Space X']);
+            $trending = collect([
+                ['label' => 'AI Revolution', 'count' => '142'],
+                ['label' => 'Global Economy', 'count' => '87'],
+                ['label' => 'Open Source', 'count' => '65'],
+                ['label' => 'Cybersecurity', 'count' => '43'],
+                ['label' => 'Space X', 'count' => '12'],
+            ]);
         }
 
         return response()->json([
             'total_saves' => $totalSaves,
             'total_summaries' => $totalSummaries,
             'active_users' => $activeUsers,
-            'pending_tasks' => $pendingTasks,
             'trending_topics' => $trending,
         ]);
     }
