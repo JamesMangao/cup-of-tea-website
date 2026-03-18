@@ -12,10 +12,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // For MySQL, we need to use raw SQL to change column size
         Schema::table('saved_articles', function (Blueprint $table) {
-            // Change the 'type' column from CHAR or ENUM to VARCHAR(50)
-            DB::statement('ALTER TABLE saved_articles MODIFY type VARCHAR(50)');
+            $table->string('type', 50)->change();
         });
     }
 
@@ -25,8 +23,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('saved_articles', function (Blueprint $table) {
-            // You can revert if needed
-            DB::statement('ALTER TABLE saved_articles MODIFY type VARCHAR(255)');
+            $table->string('type', 255)->change();
         });
     }
 };
