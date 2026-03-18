@@ -662,7 +662,7 @@
 <div id="page-loader" :class="{ 'visible': loading }" x-cloak>
     <div class="loader-content">
         <div class="premium-spinner"><div></div><div></div><div></div><div></div></div>
-        <div class="loader-text">Initializing Systems</div>
+        <div class="loader-text">Loading...</div>
     </div>
 </div>
 <div class="app-shell">

@@ -254,18 +254,35 @@ class AiController extends Controller
             'summary'       => 'required|string',
         ]);
 
-        $summary = Summary::create([
+        // 1. Keep the history in Summary table
+        $summary = \App\Models\Summary::create([
             'user_id'       => auth()->id(),
             'original_text' => $request->original_text,
             'summary'       => $request->summary,
         ]);
+
+        try {
+            // 2. Add to SavedArticle table so it shows up in Content Library
+            // We use a specific type and store the actual summary in the description field
+            \App\Models\SavedArticle::create([
+                'user_id'          => auth()->id(),
+                'news_title'       => 'AI Summary: ' . (strlen($request->original_text) > 60 ? substr($request->original_text, 0, 60) . '...' : $request->original_text),
+                'news_description' => $request->summary,
+                'news_source'      => 'AI Summarizer',
+                'news_url'         => 'summary-' . $summary->id . '-' . time(),
+                'type'             => 'summary',
+            ]);
+        } catch (\Exception $e) {
+            \Log::error("Failed to sync summary to library: " . $e->getMessage());
+            // We still return the summary as the primary action succeeded
+        }
 
         return response()->json($summary, 201);
     }
 
     public function summaries()
     {
-        $summaries = Summary::with('user')->latest()->limit(20)->get();
+        $summaries = Summary::where('user_id', auth()->id())->latest()->limit(20)->get();
         return response()->json($summaries);
     }
 }
