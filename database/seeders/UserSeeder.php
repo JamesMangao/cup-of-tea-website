@@ -15,14 +15,14 @@ class UserSeeder extends Seeder
     {
         User::updateOrCreate(['email' => 'admin@cupoftea.com'], [
             'name' => 'Admin',
-            'password' => Hash::make('admin123'),
+            'password' => 'admin123',
             'role' => 'admin',
             'is_admin' => true,
         ]);
 
         User::updateOrCreate(['email' => 'user@cupoftea.com'], [
             'name' => 'User',
-            'password' => Hash::make('user123'),
+            'password' => 'user123',
             'role' => 'viewer',
             'is_admin' => false,
         ]);
