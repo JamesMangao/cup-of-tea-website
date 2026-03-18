@@ -17,7 +17,7 @@ return [
     |
     */
 
-'default' => env('DB_CONNECTION', 'mysql'),
+    'default' => (env('MYSQLHOST') || env('DATABASE_URL') || env('MYSQL_URL')) ? 'mysql' : env('DB_CONNECTION', 'mysql'),
 
     /*
     |--------------------------------------------------------------------------
