@@ -2,6 +2,7 @@ import './bootstrap';
 import 'notyf/notyf.min.css';
 import { Notyf } from 'notyf';
 import Alpine from 'alpinejs';
+import aiSummarizer from './ai-summarizer.js';
 
 const notyf = new Notyf({
   duration: 4000,
@@ -55,4 +56,7 @@ window.toast = {
 };
 
 window.Alpine = Alpine;
+
+Alpine.data('aiSummarizer', aiSummarizer);
+
 Alpine.start();
