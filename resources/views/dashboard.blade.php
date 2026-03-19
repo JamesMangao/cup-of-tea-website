@@ -208,7 +208,7 @@
 (function() {
     const register = () => {
         Alpine.data('dashboard', () => ({
-        loading: true,
+        loading: false,
         error: null,
         articles: [],
         activeCategory: 'top',
@@ -218,17 +218,19 @@
         categories: [
             { key: 'top',           label: '🔥 Top' },
             { key: 'technology',    label: '💻 Tech' },
-            { key: 'business',      label: '📈 Business' },
+            { key: 'business',     label: '📈 Business' },
             { key: 'science',       label: '🔬 Science' },
-            { key: 'health',        label: '🏥 Health' },
-            { key: 'politics',      label: '🌍 Politics' },
-            { key: 'sports',        label: '⚽ Sports' },
-            { key: 'entertainment', label: '🎬 Entertainment' },
+            { key: 'health',       label: '🏥 Health' },
+            { key: 'politics',     label: '🌍 Politics' },
+            { key: 'sports',       label: '⚀ Sports' },
+            { key: 'entertainment',label: '🎬 Entertainment' },
         ],
 
         init() {
-            this.fetchNews();
-            this.fetchStats();
+            this.$nextTick(() => {
+                this.fetchNews();
+                this.fetchStats();
+            });
             setInterval(() => this.fetchStats(), 30000); // Polling every 30s
         },
 

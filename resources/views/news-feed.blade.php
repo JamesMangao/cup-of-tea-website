@@ -252,7 +252,7 @@ function isFullContentSource(sourceName) {
 
 document.addEventListener('alpine:init', () => {
     Alpine.data('newsFeed', () => ({
-        loading: true, error: null, articles: [],
+        loading: false, error: null, articles: [],
         activeCategory: 'top', searchQuery: '', sortBy: 'publishedAt',
         page: 1, pageSize: 10, totalPages: 1,
         favorites: JSON.parse(localStorage.getItem('cup_favs') || '[]'),
@@ -265,7 +265,7 @@ document.addEventListener('alpine:init', () => {
             { key: 'science',       label: '🔬 Science' },
             { key: 'health',        label: '🏥 Health' },
             { key: 'politics',      label: '🌍 Politics' },
-            { key: 'sports',        label: '⚽ Sports' },
+            { key: 'sports',       label: '⚽ Sports' },
             { key: 'entertainment', label: '🎬 Entertainment' },
         ],
 
@@ -286,8 +286,11 @@ document.addEventListener('alpine:init', () => {
             return range;
         },
 
-        init() { this.fetchArticles(); },
-
+        init() {
+            this.$nextTick(() => {
+                this.fetchArticles();
+            });
+        },
         async fetchArticles() {
             this.loading = true;
             this.error   = null;

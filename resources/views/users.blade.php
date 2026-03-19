@@ -362,30 +362,35 @@
         </div>
     </div>
 
-    {{-- ── Delete Confirm Modal ──────────────────────────────────────── --}}
-    <div class="modal-overlay" x-show="showDelete" x-cloak @click.self="showDelete=false" style="display:none;">
-        <div class="modal-box" @click.stop style="max-width:400px;">
-            <div class="modal-header">
-                <div class="modal-title" style="color:var(--red);">Delete User</div>
-                <button class="modal-close" @click="showDelete=false" type="button">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p style="font-size:0.84rem;color:#aaa;line-height:1.6;">
-                    Are you sure you want to delete
-                    <strong style="color:#e0e0e0;" x-text="deleteTarget.name"></strong>?
-                    This cannot be undone.
-                </p>
-            </div>
-            <form :action="`/users/${deleteTarget.id}`" method="POST">
-                @csrf
-                @method('DELETE')
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-outline" @click="showDelete=false">Cancel</button>
-                    <button type="submit" class="btn" style="background:var(--red);color:#fff;">Delete</button>
+    {{-- Delete User Modal --}}
+    <div class="fixed inset-0 z-50 overflow-y-auto" x-show="showDelete" x-cloak x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" style="display:none;">
+        <div class="flex min-h-full items-center justify-center p-4">
+            <div class="fixed inset-0 bg-black/70 backdrop-blur-sm" @click="showDelete=false"></div>
+            <div class="relative bg-[#111111] border border-[#2e2e2e] rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden" @click.stop x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100">
+                <div class="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-red-500 to-transparent"></div>
+                <div class="p-6">
+                    <div class="flex items-center gap-4 mb-4">
+                        <div class="w-12 h-12 rounded-full bg-red-500/10 flex items-center justify-center flex-shrink-0">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#e05555" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-white">Delete User</h3>
+                            <p class="text-xs text-gray-400">This action cannot be undone</p>
+                        </div>
+                    </div>
+                    <p class="text-sm text-gray-300 mb-6 leading-relaxed">
+                        Are you sure you want to permanently delete
+                        <span class="text-white font-semibold" x-text="deleteTarget.name"></span>?
+                        All their data will be lost forever.
+                    </p>
+                    <form :action="`/users/${deleteTarget.id}`" method="POST" class="flex gap-3 justify-end">
+                        @csrf
+                        @method('DELETE')
+                        <button type="button" class="px-4 py-2 text-sm font-medium text-gray-300 bg-[#1a1a1a] border border-[#333] rounded-lg hover:bg-[#252525] transition-colors" @click="showDelete=false">Cancel</button>
+                        <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 transition-colors">Delete Forever</button>
+                    </form>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
 
