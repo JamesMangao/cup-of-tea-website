@@ -1,15 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Admin - Cup of Tea</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
-    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
-</head>
-<body class="bg-slate-900 text-white min-h-screen p-8 font-inter" x-data="adminApp()">
-    <div class="max-w-7xl mx-auto">
+<x-app-layout>
+    <div class="p-4 sm:p-6 lg:p-8">
+<div x-data="adminApp()" class="max-w-7xl mx-auto">
         <div class="flex justify-between items-center mb-8">
             <h1 class="text-4xl font-bold bg-gradient-to-r from-teal-400 to-purple-500 bg-clip-text text-transparent">Admin Dashboard ☕</h1>
             <div class="flex space-x-4">
