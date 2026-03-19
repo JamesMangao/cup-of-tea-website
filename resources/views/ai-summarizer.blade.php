@@ -1,3 +1,4 @@
+
 @extends('layouts.app')
 @section('title', 'AI Summarizer')
 
@@ -41,7 +42,7 @@
 @endpush
 
 @section('content')
-<div x-data="aiSummarizer" class="animate-fade-in">
+<div x-data="aiSummarizer" x-cloak class="animate-fade-in" x-init="init()">
 
     <div class="page-eyebrow">Intellectual Hub</div>
     <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:32px;">
@@ -178,8 +179,9 @@
                     </template>
                     
                     <div x-show="resultText" class="result-text" x-html="formatResult(resultText)">
-                        <span x-show="isLoading" class="typing-cursor"></span>
+                        
                     </div>
+                    <span x-show="isLoading" class="typing-cursor"></span>
 
                     <div x-show="!isLoading && resultStats.words" class="mt-10 pt-8 border-t border-border-light grid grid-cols-4 gap-4">
                         <div class="text-center">
@@ -188,15 +190,15 @@
                         </div>
                         <div class="text-center">
                             <div class="text-xl font-black text-blue mb-1" x-text="resultStats.sentences"></div>
-                            <div class="text-[9px] font-black text-muted uppercase tracking-widest">Sentences</div>
+                            <div class="text-[9px] font-bold text-muted uppercase tracking-widest">Sentences</div>
                         </div>
                         <div class="text-center">
                             <div class="text-xl font-black text-pink mb-1" x-text="resultStats.readTime + 's'"></div>
-                            <div class="text-[9px] font-black text-muted uppercase tracking-widest">Read Time</div>
+                            <div class="text-[9px] font-bold text-muted uppercase tracking-widest">Read Time</div>
                         </div>
                         <div class="text-center">
                             <div class="text-xl font-black text-lime mb-1" x-text="resultStats.compression + '%'"></div>
-                            <div class="text-[9px] font-black text-muted uppercase tracking-widest">Compression</div>
+                            <div class="text-[9px] font-bold text-muted uppercase tracking-widest">Compression</div>
                         </div>
                     </div>
                 </div>
@@ -254,13 +256,13 @@
                     <div class="flex gap-3">
                         <span class="text-lg">⚡</span>
                         <p class="text-[11px] text-muted leading-relaxed">
-                            Summarize by <span class="text-blue font-black">URL</span> to bypass article clutter and ads automatically.
+                            Summarize by <span class="text-blue font-bold">URL</span> to bypass article clutter and ads automatically.
                         </p>
                     </div>
                     <div class="flex gap-3">
                         <span class="text-lg">🌍</span>
                         <p class="text-[11px] text-muted leading-relaxed">
-                            Need a translation? Change the <span class="text-pink font-black">Language</span> setting before clicking generate.
+                            Need a translation? Change the <span class="text-pink font-bold">Language</span> setting before clicking generate.
                         </p>
                     </div>
                 </div>
@@ -304,12 +306,6 @@
                 bullets: 'Extract 5 high-impact bullet points, each starting with • and focused on a unique insight.',
                 eli5: 'Explain this in ultra-simple terms as if talking to a bright 10-year-old. No jargon.',
                 executive: 'Format as an Executive Brief: [SUMMARY], [KEY IMPLICATIONS], and [NEXT STEPS/ACTION ITEMS].',
-            };
-            const toneInstructions = {
-                neutral: 'Maintain an objective, journalism-grade tone.',
-                formal: 'Use sophisticated, academic-level vocabulary.',
-                casual: 'Keep it light, conversational, and engaging like a newsletter.',
-                critical: 'Analyze objectively, highlighting potential biases or logical gaps.',
             };
             const langNote = this.outputLang !== 'english' ? `Crucially, respond entirely in ${this.outputLang}.` : '';
             
@@ -467,3 +463,4 @@
 </script>
 @endpush
 @endsection
+
