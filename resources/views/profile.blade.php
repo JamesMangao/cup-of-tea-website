@@ -36,11 +36,10 @@
                             @endif
                         </div>
                         <p class="text-secondary text-lg mb-8 opacity-70">{{ $user->email }}</p>
-                        
                         <div class="flex flex-wrap items-center justify-center md:justify-start gap-12">
                             <div class="flex flex-col">
                                 <span class="text-[10px] font-black text-muted uppercase tracking-widest mb-1.5 opacity-50">Discovery Date</span>
-                                <span class="text-sm font-bold text-white">{{ $user->created_at->format('M d, Y') }}</span>
+                                <span class="text-sm font-bold text-white">{{ $user->created_at ? $user->created_at->format('M d, Y') : 'N/A' }}</span>
                             </div>
                             <div class="flex flex-col">
                                 <span class="text-[10px] font-black text-muted uppercase tracking-widest mb-1.5 opacity-50">Signal Integrity</span>

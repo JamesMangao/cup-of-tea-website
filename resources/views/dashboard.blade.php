@@ -44,9 +44,26 @@
     .action-btn.liked { border-color: var(--pink); color: var(--pink); background: rgba(244,114,182,0.08); }
     .action-btn.liked:hover { border-color: var(--pink); color: var(--pink); }
 
-    .skeleton { background: linear-gradient(90deg, #1e1e1e 25%, #252525 50%, #1e1e1e 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 6px; }
+    .skeleton { 
+        background: linear-gradient(90deg, #1a1a1a 25%, #252525 50%, #1a1a1a 75%); 
+        background-size: 200% 100%; 
+        animation: shimmer 1.5s infinite; 
+        border-radius: 6px;
+        position: relative;
+        overflow: hidden;
+    }
+    .skeleton::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(90deg, transparent, rgba(182,224,64,0.05), transparent);
+        animation: shimmer 1.5s infinite;
+    }
     @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
-    .skel-item { display: flex; gap: 14px; padding: 14px 20px; border-bottom: 1px solid var(--border); }
+    .skel-item { display: flex; gap: 14px; padding: 14px 20px; border-bottom: 1px solid var(--border); background: rgba(0,0,0,0.2); }
 </style>
 @endpush
 

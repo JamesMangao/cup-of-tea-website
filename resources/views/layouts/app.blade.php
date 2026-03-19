@@ -448,20 +448,52 @@
             to { transform: rotate(360deg); } 
         }
 
-        /* LOADER */
+        /* LOADER - Enhanced Tech Style */
         #page-loader {
             position: fixed;
             inset: 0;
-            background: rgba(10, 10, 10, 0.8);
-            backdrop-filter: blur(8px);
+            background: linear-gradient(135deg, #0a0a0a 0%, #111111 50%, #0a0a0a 100%);
             z-index: 9999;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            transition: opacity 0.4s ease, visibility 0.4s;
+            transition: opacity 0.5s ease, visibility 0.5s;
             visibility: hidden;
             opacity: 0;
+            overflow: hidden;
+        }
+
+        #page-loader::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: 
+                linear-gradient(90deg, transparent 0%, rgba(182,224,64,0.03) 50%, transparent 100%),
+                repeating-linear-gradient(0deg, transparent 0px, transparent 1px, rgba(182,224,64,0.02) 1px, transparent 2px);
+            background-size: 100% 100%, 100% 4px;
+            animation: grid-scan 3s linear infinite;
+        }
+
+        #page-loader::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(182,224,64,0.1), transparent);
+            animation: scan-line 2s ease-in-out infinite;
+        }
+
+        @keyframes grid-scan {
+            0% { background-position: 0 0, 0 0; }
+            100% { background-position: 0 100%, 0 4px; }
+        }
+
+        @keyframes scan-line {
+            0% { left: -50%; }
+            100% { left: 150%; }
         }
 
         #page-loader.visible {
@@ -473,48 +505,144 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 20px;
-        }
-
-        .premium-spinner {
-            width: 60px;
-            height: 60px;
+            gap: 32px;
             position: relative;
+            z-index: 10;
         }
 
-        .premium-spinner div {
-            box-sizing: border-box;
-            display: block;
+        /* Tech Hexagon Spinner */
+        .tech-spinner {
+            position: relative;
+            width: 80px;
+            height: 80px;
+        }
+
+        .tech-spinner::before {
+            content: '';
             position: absolute;
-            width: 48px;
-            height: 48px;
-            margin: 6px;
-            border: 3px solid var(--lime);
-            border-radius: 50%;
-            animation: premium-spinner 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-            border-color: var(--lime) transparent transparent transparent;
+            inset: 0;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpolygon points='50,5 95,27.5 95,72.5 50,95 5,72.5 5,27.5' fill='none' stroke='%23b6e040' stroke-width='2' opacity='0.3'/%3E%3C/svg%3E") center/contain no-repeat;
+            animation: spin 4s linear infinite;
         }
-        .premium-spinner div:nth-child(1) { animation-delay: -0.45s; }
-        .premium-spinner div:nth-child(2) { animation-delay: -0.3s; }
-        .premium-spinner div:nth-child(3) { animation-delay: -0.15s; }
 
-        @keyframes premium-spinner {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        .tech-spinner-core {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 50px;
+            height: 50px;
+            margin: -25px 0 0 -25px;
+            border: 2px solid transparent;
+            border-top-color: var(--lime);
+            border-radius: 50%;
+            animation: spin 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+        }
+
+        .tech-spinner-core::before {
+            content: '';
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            right: 4px;
+            bottom: 4px;
+            border: 2px solid transparent;
+            border-top-color: var(--lime);
+            border-radius: 50%;
+            animation: spin 0.8s cubic-bezier(0.5, 0, 0.5, 1) infinite reverse;
+        }
+
+        .tech-spinner-dot {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 8px;
+            height: 8px;
+            margin: -4px 0 0 -4px;
+            background: var(--lime);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--lime), 0 0 20px var(--lime);
+            animation: pulse-dot 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.5); opacity: 0.5; }
         }
 
         .loader-text {
-            font-size: 0.75rem;
-            font-weight: 700;
-            letter-spacing: 0.2em;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .loader-text-main {
+            font-size: 0.8rem;
+            font-weight: 800;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .loader-text-main::before,
+        .loader-text-main::after {
+            content: '';
+            width: 20px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--lime));
+        }
+
+        .loader-text-main::after {
+            background: linear-gradient(90deg, var(--lime), transparent);
+        }
+
+        .loader-text-sub {
+            font-size: 0.65rem;
+            font-weight: 500;
+            letter-spacing: 0.15em;
             text-transform: uppercase;
             color: var(--lime);
-            animation: pulse-text 2s infinite;
+            opacity: 0.8;
+            animation: pulse-text 2s ease-in-out infinite;
         }
 
         @keyframes pulse-text {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 0.4; }
+        }
+
+        /* Loading progress bar */
+        .loader-progress {
+            width: 120px;
+            height: 2px;
+            background: rgba(182,224,64,0.1);
+            border-radius: 2px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .loader-progress::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 30%;
+            background: linear-gradient(90deg, transparent, var(--lime), transparent);
+            animation: progress-scan 1.5s ease-in-out infinite;
+        }
+
+        @keyframes progress-scan {
+            0% { left: -30%; }
+            100% { left: 100%; }
         }
 
         .modal-content-styled {
@@ -661,8 +789,15 @@
 <!-- Page Loader -->
 <div id="page-loader" :class="{ 'visible': loading }" x-cloak>
     <div class="loader-content">
-        <div class="premium-spinner"><div></div><div></div><div></div><div></div></div>
-        <div class="loader-text">Loading...</div>
+        <div class="tech-spinner">
+            <div class="tech-spinner-core"></div>
+            <div class="tech-spinner-dot"></div>
+        </div>
+        <div class="loader-text">
+            <span class="loader-text-main">Initializing</span>
+            <span class="loader-text-sub">Neural Network</span>
+        </div>
+        <div class="loader-progress"></div>
     </div>
 </div>
 <div class="app-shell">
