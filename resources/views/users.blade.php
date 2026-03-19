@@ -219,7 +219,7 @@
                         <span class="status-dot status-{{ $status }}">{{ ucfirst($status) }}</span>
                     </td>
                     <td style="color:var(--muted);font-size:0.75rem;">
-                        {{ $user->created_at->format('M d, Y') }}
+                        {{ $user->created_at ? $user->created_at->format('M d, Y') : 'N/A' }}
                     </td>
                     <td>
                         <div class="row-actions" style="justify-content:flex-end;">
