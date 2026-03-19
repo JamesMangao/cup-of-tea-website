@@ -839,5 +839,6 @@ document.addEventListener('click', (e) => {
 
 @stack('scripts')
 
+    @stack('scripts')
 </body>
 </html>

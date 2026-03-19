@@ -169,6 +169,9 @@ class AiController extends Controller
         try {
             $response = Http::timeout(15)
                 ->connectTimeout(10)
+                ->withHeaders([
+                    'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+                ])
                 ->get($url);
 
             if (!$response->successful()) {
@@ -181,7 +184,7 @@ class AiController extends Controller
             // Extract article content
             $content = $this->extractArticleText($html);
             
-            if (strlen($content) < 50) {
+            if (strlen($content) < 100) { // Increased minimum length
                 Log::warning("Extracted content too short from {$url}");
                 return null;
             }
@@ -206,7 +209,8 @@ class AiController extends Controller
         // Look for article containers
         $patterns = [
             '/<article[^>]*>(.*?)<\/article>/is',
-            '/<div[^>]*class=["\'](?:.*?)?article(?:.*?)?["\'][^>]*>(.*?)<\/div>/is',
+            '/<div[^>]*class=["\'](?:.*?)?(?:article|post|story)-body(?:.*?)?["\'][^>]*>(.*?)<\/div>/is',
+            '/<div[^>]*id=["\'](?:.*?)?article(?:.*?)?["\'][^>]*>(.*?)<\/div>/is',
             '/<main[^>]*>(.*?)<\/main>/is',
             '/<div[^>]*id=["\'](?:.*?)?content(?:.*?)?["\'][^>]*>(.*?)<\/div>/is',
         ];
