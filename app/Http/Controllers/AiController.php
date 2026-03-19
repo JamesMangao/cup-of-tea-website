@@ -27,6 +27,7 @@ class AiController extends Controller
             'content'   => 'nullable|string|max:25000',
             'url'       => 'nullable|string|url',
             'style'     => 'nullable|string',
+            'model'     => 'nullable|string', // Allow model selection
             'prompt'    => 'nullable|string',
             'title'     => 'nullable|string',
             'sourceUrl' => 'nullable|string',
