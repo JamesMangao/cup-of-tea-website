@@ -38,19 +38,36 @@ class AiController extends Controller
         $style   = $request->input('style', 'professional');
         $title   = $request->input('title', '');
 
-        // If topic query is provided, fetch latest news for that topic
+        // If topic query is provided, synthesize from multiple news sources
         if (!$content && !$url && $request->has('topic')) {
             $topic = $request->input('topic');
-            $news = (new NewsController())->news(new Request(['q' => $topic]));
+            $news = (new NewsController())->news(new Request(['q' => $topic, 'limit' => 5]));
             $data = $news->getData(true);
-            if (!empty($data['articles'])) {
-                $firstArticle = $data['articles'][0];
-                $url = $firstArticle['url'];
-                $title = $firstArticle['title'];
-            } else {
+            if (empty($data['articles'])) {
                 return response()->json([
                     'error' => "No news found for topic: {$topic}. Try a different query."
                 ], 404);
+            }
+
+            // Build comprehensive context from multiple articles
+            $articleContexts = [];
+            $titles = [];
+            foreach (array_slice($data['articles'], 0, 5) as $article) {
+                $titles[] = $article['title'] ?? '';
+                $desc = $article['description'] ?? '';
+                $source = $article['source']['name'] ?? 'Unknown';
+                if ($desc) {
+                    $articleContexts[] = "[{$source}] {$article['title']}: {$desc}";
+                }
+            }
+
+            $title = implode(' | ', array_slice($titles, 0, 3));
+            $content = implode("\n\n---\n\n", $articleContexts);
+
+            if (strlen(trim($content)) < 100) {
+                return response()->json([
+                    'error' => "Not enough content found for topic: {$topic}. Try a broader search term."
+                ], 400);
             }
         }
 
@@ -71,14 +88,41 @@ class AiController extends Controller
             ], 400);
         }
 
+        // Detect if this is a topic query (content built from multiple news articles)
+        $isTopicQuery = $request->has('topic') && strpos($content, '---') !== false;
+
         $stylePrompts = [
             'professional' => 'Write a clear, professional 3-paragraph summary of this news article. Use formal language suitable for a business audience. Be concise and factual.',
+            'detailed'     => 'Write a comprehensive multi-paragraph analysis. Cover all key points, provide context, and include relevant details. Well-structured with clear sections.',
+            'concise'      => 'Write a brief 2-3 sentence summary capturing only the most essential information. Get straight to the point.',
+            'bullets'      => 'Extract 5-7 high-impact bullet points. Each bullet should cover a distinct key insight or finding. Start each with "• ".',
+            'eli5'         => 'Explain this in simple, easy-to-understand terms as if talking to a curious beginner. Avoid jargon. Make it accessible to everyone.',
             'executive'    => "Write an executive TL;DR with exactly 5 bullet points.\nEach bullet must be one concise sentence.\nStart each bullet with \"• \".",
             'genz'         => 'Summarize this news article in Gen-Z casual style — modern language, keep it real and relatable, no cap. Write 3-4 short punchy paragraphs.',
         ];
 
-        $styleInstruction = $request->input('prompt')
-            ?? ($stylePrompts[$style] ?? $stylePrompts['professional']);
+        $topicPrompts = [
+            'professional' => 'Synthesize a comprehensive research briefing from multiple news sources. Present findings in a structured format with: (1) Overview, (2) Key Developments, (3) Implications, (4) What to Watch. Use formal business language.',
+            'detailed'     => 'Create an in-depth research report synthesizing all the provided sources. Organize by themes, provide background context, and highlight conflicting viewpoints. Cover the topic thoroughly.',
+            'concise'      => 'Synthesize the key takeaways into 2-3 concise sentences. Focus on what matters most.',
+            'bullets'      => 'Extract 7-10 key insights from across all sources. Group related points together. Each bullet should be a distinct, valuable takeaway. Start with "• ".',
+            'eli5'         => 'Explain this topic in simple terms that anyone can understand. Use everyday language, analogies, and avoid technical jargon. Make it approachable.',
+            'executive'    => "Create an executive briefing with 5 bullet points synthesizing all sources. Each bullet: one clear insight. Group into: [KEY FINDINGS] and [STRATEGIC IMPLICATIONS]. Start bullets with \"• \".",
+            'genz'         => 'Synthesize this topic in a way that is relatable and easy to understand. Keep it real, use modern language, no cap. Make it engaging and informative.',
+        ];
+
+        $styleInstruction = $request->input('prompt');
+        if (!$styleInstruction) {
+            $styleInstruction = $isTopicQuery 
+                ? ($topicPrompts[$style] ?? $topicPrompts['professional'])
+                : ($stylePrompts[$style] ?? $stylePrompts['professional']);
+        }
+
+        // Add topic context to prompt if applicable
+        if ($isTopicQuery) {
+            $topicName = $request->input('topic');
+            $styleInstruction = "TOPIC: {$topicName}\n\n{$styleInstruction}\n\nSynthesize information from multiple reliable news sources. Identify common themes, differences in reporting, and emerging trends.";
+        }
 
         // Truncate to ~6000 chars — well within Groq's context window
         $truncated = strlen($content) > 6000
