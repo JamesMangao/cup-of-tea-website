@@ -307,6 +307,13 @@
                 eli5: 'Explain this in ultra-simple terms as if talking to a bright 10-year-old. No jargon.',
                 executive: 'Format as an Executive Brief: [SUMMARY], [KEY IMPLICATIONS], and [NEXT STEPS/ACTION ITEMS].',
             };
+            const toneInstructions = {
+                professional: 'Maintain a professional, authoritative tone with precise language.',
+                conversational: 'Use a friendly, approachable tone as if explaining to a curious friend.',
+                academic: 'Employ scholarly language with rigorous reasoning and evidence-based claims.',
+                journalistic: 'Report facts objectively in a clear, unbiased news-style format.',
+                inspirational: 'Motivate and inspire with empowering language and positive framing.',
+            };
             const langNote = this.outputLang !== 'english' ? `Crucially, respond entirely in ${this.outputLang}.` : '';
             
             let sourceContext = '';
