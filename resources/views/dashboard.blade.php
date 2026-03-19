@@ -167,7 +167,7 @@
                                         <img class="news-thumb" :src="article.urlToImage" :alt="article.title" 
                                              style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s;"
                                              @mouseover="$el.style.transform='scale(1.1)'" @mouseout="$el.style.transform='scale(1)'"
-                                             x-on:error="$el.src='https://via.placeholder.com/140x90?text=News'" loading="lazy" />
+                                             x-on:error="$el.src='https://placehold.co/140x90/1a1a1a/666666?text=News'" loading="lazy" />
                                     </template>
                                     <template x-if="!article.urlToImage">
                                         <div class="news-thumb-ph" style="width: 100%; height: 100%; background: var(--bg-card-light);">📰</div>
